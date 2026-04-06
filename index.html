@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz - CSS e JavaScript</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1e1e2f;
+      color: #f0f0f0;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: #2b2b3d;
+      padding: 30px;
+      width: 450px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #00ffff;
+    }
+
+    .pergunta {
+      text-align: left;
+      margin-bottom: 20px;
+      padding: 10px;
+      border-left: 3px solid #00ffff;
+      background-color: #242436;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #00ffff;
+      color: #1e1e2f;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #00b3b3;
+    }
+
+    #resultado {
+      font-weight: bold;
+      margin-top: 20px;
+      color: #00ffff;
+    }
+
+    .correto {
+      color: #00ff7f;
+      font-weight: bold;
+    }
+
+    .errado {
+      color: #ff4040;
+      font-weight: bold;
+    }
+
+    .neutro {
+      color: #ffd166;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Quiz - Efeitos Visuais 1</h1>
+
+    <form id="quizForm">
+      <div class="pergunta" id="q1box">
+        <p>1) O que significa <code>45deg</code> em <code>linear-gradient(45deg, ...)</code>?</p>
+        <label><input type="radio" name="q1" value="a"> O tempo da animação</label><br>
+        <label><input type="radio" name="q1" value="b"> O ângulo do degradê</label><br>
+        <label><input type="radio" name="q1" value="c"> O tamanho do fundo</label><br>
+        <label><input type="radio" name="q1" value="d"> A cor principal</label>
+      </div>
+
+      <div class="pergunta" id="q2box">
+        <p>2) O que a propriedade <code>position: absolute</code> faz?</p>
+        <label><input type="radio" name="q2" value="a"> Mantém o elemento sempre no fluxo normal</label><br>
+        <label><input type="radio" name="q2" value="b"> Faz o elemento desaparecer</label><br>
+        <label><input type="radio" name="q2" value="c"> Tira o elemento do fluxo normal e permite posicioná-lo de forma exata</label><br>
+        <label><input type="radio" name="q2" value="d"> Centraliza automaticamente o elemento</label>
+      </div>
+
+      <div class="pergunta" id="q3box">
+        <p>3) Na linha <code>const size = Math.random() * 60 + 20;</code>, qual é a faixa aproximada de valores gerados?</p>
+        <label><input type="radio" name="q3" value="a"> Entre 0 e 20</label><br>
+        <label><input type="radio" name="q3" value="b"> Entre 20 e 80</label><br>
+        <label><input type="radio" name="q3" value="c"> Entre 60 e 100</label><br>
+        <label><input type="radio" name="q3" value="d"> Entre 1 e 60</label>
+      </div>
+
+      <div class="pergunta" id="q4box">
+        <p>4) Para que serve <code>content: '';</code> dentro de <code>.cta-button::before</code>?</p>
+        <label><input type="radio" name="q4" value="a"> Criar o pseudo-elemento, em cima de outro</label><br>
+        <label><input type="radio" name="q4" value="b"> Adicionar um título ao botão</label><br>
+        <label><input type="radio" name="q4" value="c"> Mudar a cor da fonte</label><br>
+        <label><input type="radio" name="q4" value="d"> Aumentar o tamanho do botão</label>
+      </div>
+
+      <div class="pergunta" id="q5box">
+        <p>5) O que faz a propriedade <code>box-shadow: 0 10px 25px rgba(...)</code>?</p>
+        <label><input type="radio" name="q5" value="a"> Coloca borda no elemento</label><br>
+        <label><input type="radio" name="q5" value="b"> Faz o texto piscar</label><br>
+        <label><input type="radio" name="q5" value="c"> Cria uma sombra ao redor do elemento</label><br>
+        <label><input type="radio" name="q5" value="d"> Move o elemento para baixo</label>
+      </div>
+
+      <button type="button" onclick="corrigir()">Enviar Respostas</button>
+    </form>
+
+    <p id="resultado"></p>
+  </div>
+
+  <script>
+    function corrigir() {
+      const respostasCorretas = {
+        q1: "b",
+        q2: "c",
+        q3: "b",
+        q4: "a",
+        q5: "c"
+      };
+
+      let pontos = 0;
+      const total = Object.keys(respostasCorretas).length;
+      const form = document.getElementById("quizForm");
+
+      for (const q in respostasCorretas) {
+        const box = document.getElementById(q + "box");
+
+        const antigo = box.querySelector(".feedback");
+        if (antigo) antigo.remove();
+
+        const marcado = form.querySelector(`input[name="${q}"]:checked`);
+        const respostaAluno = marcado ? marcado.value : "";
+
+        const feedback = document.createElement("p");
+        feedback.classList.add("feedback");
+
+        if (!respostaAluno) {
+          feedback.textContent = "⚠️ Você não marcou nenhuma alternativa.";
+          feedback.classList.add("neutro");
+        } else if (respostaAluno === respostasCorretas[q]) {
+          pontos++;
+          feedback.textContent = "✅ Correto!";
+          feedback.classList.add("correto");
+        } else {
+          let respostaCorretaTexto = "";
+          const inputs = box.querySelectorAll("label input");
+          inputs.forEach(input => {
+            if (input.value === respostasCorretas[q]) {
+              respostaCorretaTexto = input.parentNode.textContent.trim();
+            }
+          });
+
+          feedback.textContent = `❌ Errado. A resposta correta é: ${respostaCorretaTexto}`;
+          feedback.classList.add("errado");
+        }
+
+        box.appendChild(feedback);
+      }
+
+      document.getElementById("resultado").textContent =
+        `Você acertou ${pontos} de ${total} questões.`;
+    }
+  </script>
+</body>
+</html>
