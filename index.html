@@ -57,6 +57,21 @@
       color: #00ffff;
     }
 
+    #linkRespostas {
+      margin-top: 20px;
+      word-break: break-word;
+    }
+
+    #linkRespostas a {
+      color: #ffd166;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    #linkRespostas a:hover {
+      text-decoration: underline;
+    }
+
     .correto {
       color: #00ff7f;
       font-weight: bold;
@@ -122,6 +137,7 @@
     </form>
 
     <p id="resultado"></p>
+    <p id="linkRespostas"></p>
   </div>
 
   <script>
@@ -138,6 +154,8 @@
       const total = Object.keys(respostasCorretas).length;
       const form = document.getElementById("quizForm");
 
+      let params = [];
+
       for (const q in respostasCorretas) {
         const box = document.getElementById(q + "box");
 
@@ -145,12 +163,14 @@
         if (antigo) antigo.remove();
 
         const marcado = form.querySelector(`input[name="${q}"]:checked`);
-        const respostaAluno = marcado ? marcado.value : "";
+        const respostaAluno = marcado ? marcado.value : "nao_respondeu";
+
+        params.push(`${q}=${respostaAluno}`);
 
         const feedback = document.createElement("p");
         feedback.classList.add("feedback");
 
-        if (!respostaAluno) {
+        if (respostaAluno === "nao_respondeu") {
           feedback.textContent = "⚠️ Você não marcou nenhuma alternativa.";
           feedback.classList.add("neutro");
         } else if (respostaAluno === respostasCorretas[q]) {
@@ -160,6 +180,7 @@
         } else {
           let respostaCorretaTexto = "";
           const inputs = box.querySelectorAll("label input");
+
           inputs.forEach(input => {
             if (input.value === respostasCorretas[q]) {
               respostaCorretaTexto = input.parentNode.textContent.trim();
@@ -175,6 +196,15 @@
 
       document.getElementById("resultado").textContent =
         `Você acertou ${pontos} de ${total} questões.`;
+
+      params.push(`pontos=${pontos}`);
+      params.push(`total=${total}`);
+
+      const urlBase = window.location.origin + window.location.pathname;
+      const link = urlBase + "?" + params.join("&");
+
+      document.getElementById("linkRespostas").innerHTML =
+        `🔗 Link com respostas e status:<br><a href="${link}" target="_blank">${link}</a>`;
     }
   </script>
 </body>
